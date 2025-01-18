@@ -1,15 +1,29 @@
 package main
 
 import (
+	"log"
+	"regexp"
 	"strings"
 
 	aw "github.com/deanishe/awgo"
+	ts "github.com/spearkkk/u/timestamp"
+	uuid "github.com/spearkkk/u/uuid"
 )
 
+type Utility interface {
+	GetKey() string
+	GetName() string
+	GetDescription() string
+	GetResults(wf *aw.Workflow)
+}
+
 var wf *aw.Workflow
+var utilities = []Utility{}
 
 func init() {
 	wf = aw.New()
+	utilities = append(utilities, uuid.NewUUID())
+	utilities = append(utilities, ts.NewTimestamp("", ""))
 }
 
 func main() {
@@ -17,6 +31,7 @@ func main() {
 }
 
 func run() {
+	log.Println("Running workflow...")
 	// Parse input into queries
 	var queries []string
 	if len(wf.Args()) > 0 {
@@ -24,27 +39,17 @@ func run() {
 		queries = parseQueries(rawQuery)
 	}
 
-	functions := getFunctions()
-
 	if len(queries) == 0 {
-		// Show all functions with their default command results
-		for _, function := range functions {
-			if function.defaultCommand != nil {
-				wf.NewItem(function.name).
-					Subtitle(function.defaultCommand.description).
-					Arg(function.defaultCommand.name).
-					Valid(true)
-			}
+		for _, utility := range utilities {
+			utility.GetResults(wf)
 		}
 	} else {
-		// Show matched functions based on the query
-		for _, function := range functions {
-			if matchesQuery(function, queries) {
-				wf.NewItem(function.name).
-					Subtitle(function.description).
-					Arg(function.name).
-					Valid(true)
-			}
+		utility := createUtility(queries)
+		if utility != nil {
+			utility.GetResults(wf)
+		} else {
+			wf.WarnEmpty("No matching utility found", "Please try again")
+			wf.NewItem("No matching utility found").Valid(false)
 		}
 	}
 
@@ -52,48 +57,44 @@ func run() {
 }
 
 func parseQueries(input string) []string {
-	return strings.Fields(input)
-}
-
-func matchesQuery(function Function, queries []string) bool {
-	for _, query := range queries {
-		if strings.Contains(function.name, query) || strings.Contains(function.description, query) {
-			return true
-		}
-		for _, command := range function.commands {
-			if strings.Contains(command.name, query) || strings.Contains(command.description, query) {
-				return true
-			}
-			for _, option := range command.options {
-				if strings.Contains(option.name, query) || strings.Contains(option.description, query) {
-					return true
-				}
+	re := regexp.MustCompile(`"([^"]*)"|'([^']*)'|(\S+)`)
+	matches := re.FindAllStringSubmatch(input, -1)
+	var results []string
+	for _, match := range matches {
+		for _, group := range match[1:] {
+			if group != "" {
+				results = append(results, group)
 			}
 		}
 	}
-	return false
+	return results
 }
 
-func getFunctions() []Function {
-	// Define your functions, commands, and options here
-	return []Function{
-		{
-			name:        "Function1",
-			description: "Description of Function1",
-			commands: []Command{
-				{
-					name:        "Command1",
-					description: "Description of Command1",
-					options: []Option{
-						{name: "Option1", description: "Description of Option1"},
-					},
-					defaultOption:  &Option{name: "Option1", description: "Description of Option1"},
-					requiresOption: true,
-				},
-			},
-			defaultCommand:  &Command{name: "Command1", description: "Description of Command1"},
-			requiresCommand: true,
-		},
-		// Add more functions as needed
+func createUtility(queries []string) Utility {
+	if len(queries) < 1 {
+		return nil
 	}
+
+	key := queries[0]
+	value1 := ""
+	value2 := ""
+
+	if len(queries) > 1 {
+		value1 = queries[1]
+	}
+	if len(queries) > 2 {
+		value2 = queries[2]
+	}
+
+	for _, utility := range utilities {
+		if utility.GetKey() == key {
+			switch key {
+			case "uuid":
+				return uuid.NewUUID()
+			case "ts":
+				return ts.NewTimestamp(value1, value2)
+			}
+		}
+	}
+	return nil
 }
