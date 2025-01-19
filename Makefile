@@ -26,17 +26,22 @@ package: build
 	cd $(WORKFLOW_DIR) && zip -r ../$(PACKAGE_NAME) *
 
 # Deploy target
-deploy: package
+deploy:
 	@echo "Deploying Alfred workflow..."
 	@echo "Fetching git tags..."
+
 	git fetch --tags
 
 	@echo "Determining the latest tag..."
-	LATEST_TAG=$$(git describe --tags `git rev-list --tags --max-count=1`); \
-	echo "Latest tag: $$LATEST_TAG"
 
-	@echo "Calculating new tag..."
-	NEW_TAG=$$(echo $$LATEST_TAG | awk -F. -v OFS=. '{$$NF++; print}'); \
+	LATEST_TAG=$$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null || echo ""); \
+	if [ -z "$$LATEST_TAG" ]; then \
+	    echo "No existing tags. Setting the initial tag to v0.0.1"; \
+	    NEW_TAG=v0.0.1; \
+	else \
+	    echo "Latest tag: $$LATEST_TAG"; \
+	    NEW_TAG=$$(echo $$LATEST_TAG | awk -F. -v OFS=. 'NF==1 {print $$1".0.1"} NF==2 {print $$1"."$$2".1"} NF>=3 {$$NF++; print}'); \
+	fi; \
 	if [ -n "$(TAG)" ]; then NEW_TAG=$(TAG); fi; \
 	echo "New tag: $$NEW_TAG"
 

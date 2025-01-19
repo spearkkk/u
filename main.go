@@ -31,7 +31,6 @@ var utilities = []Utility{}
 
 func init() {
 	flag.BoolVar(&doCheck, "check", false, "Check for updates")
-
 	wf = aw.New(update.GitHub(repo))
 
 	utilities = append(utilities, uuid.NewUUID())
@@ -45,9 +44,6 @@ func main() {
 func run() {
 	log.Println("Running workflow...")
 
-	flag.Parse()
-	query = flag.Arg(0)
-
 	if wf.UpdateCheckDue() && !wf.IsRunning(updateJobName) {
 		log.Println("Running update check in background...")
 
@@ -57,33 +53,20 @@ func run() {
 		}
 	}
 
-	// Only show update status if query is empty.
-	if query == "" && wf.UpdateAvailable() {
-		// Turn off UIDs to force this item to the top.
-		// If UIDs are enabled, Alfred will apply its "knowledge"
-		// to order the results based on your past usage.
-		wf.Configure(aw.SuppressUIDs(true))
+	if doCheck {
+		if err := wf.CheckForUpdate(); err != nil {
+			log.Printf("Error checking for update: %s", err)
+		}
+		return
+	}
 
-		// Notify user of update. As this item is invalid (Valid(false)),
-		// actioning it expands the query to the Autocomplete value.
-		// "workflow:update" triggers the updater Magic Action that
-		// is automatically registered when you configure Workflow with
-		// an Updater.
-		//
-		// If executed, the Magic Action downloads the latest version
-		// of the workflow and asks Alfred to install it.
+	if query == "" && wf.UpdateAvailable() {
+		wf.Configure(aw.SuppressUIDs(true))
 		wf.NewItem("Update available!").
 			Subtitle("↩ to install").
 			Autocomplete("workflow:update").
 			Valid(false)
 	}
-
-	// Add an extra item to reset update status for demo purposes.
-	// As with the update notification, this item triggers a Magic
-	// Action that deletes the cached list of releases.
-	wf.NewItem("Reset update status").
-		Autocomplete("workflow:delcache").
-		Valid(false)
 
 	// Parse input into queries
 	var queries []string
