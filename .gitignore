@@ -27,3 +27,5 @@ go.work.sum
 .DS_Store
 .vscode
 .idea
+
+workflow

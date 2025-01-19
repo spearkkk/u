@@ -16,12 +16,13 @@ build:
 # Clean target
 clean:
 	@echo "Cleaning up build artifacts..."
-	rm -f $(BINARY_NAME)
 	rm -f $(PACKAGE_NAME)
+	rm -rf $(WORKFLOW_DIR)
 
 # Package target
 package: build
 	@echo "Packaging Alfred workflow..."
+	cp ./info.plist $(WORKFLOW_DIR)
 	cd $(WORKFLOW_DIR) && zip -r ../$(PACKAGE_NAME) *
 
 # Deploy target
