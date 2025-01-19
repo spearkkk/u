@@ -1,7 +1,16 @@
 # u
 utility functions for Alfred workflow
+### Todo
+- [ ] write down README.md
+- [ ] AW Updater, fix update for workflow
+- [ ] Timestamp, supports formats from configuration
+- [ ] JSON, prettify, minify, validate
+- [ ] Decode, encode, base64, url, html
+- [ ] Color, convert, hex, rgb, hsl
+- [ ] String, convert, case, trim, replace
+- [ ] String, naming case, camel, snake, kebab, title
 
 
-// <a href="https://www.flaticon.com/free-icons/web-development" title="web development icons">Web development icons created by srip - Flaticon</a>
 
-// <a href="https://www.flaticon.com/free-icons/ui" title="ui icons">Ui icons created by NasikLababan - Flaticon</a>
+## ❣️ Inspirations
+Icon by [Web development icons created by srip - Flaticon](https://www.flaticon.com/free-icons/web-development)
