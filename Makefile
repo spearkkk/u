@@ -23,6 +23,7 @@ clean:
 package: build
 	@echo "Packaging Alfred workflow..."
 	cp ./info.plist $(WORKFLOW_DIR)
+	cp ./icon.png $(WORKFLOW_DIR)
 	cd $(WORKFLOW_DIR) && zip -r ../$(PACKAGE_NAME) *
 
 # Deploy target

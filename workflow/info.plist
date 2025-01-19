@@ -3,7 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>bundleid</key>
-	<string>com.yourname.utilities</string>
+	<string>dev.spearkkk.u</string>
+	<key>category</key>
+	<string>Tools</string>
 	<key>connections</key>
 	<dict>
 		<key>script-filter</key>
@@ -27,7 +29,7 @@
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
-	<string>Utilities</string>
+	<string>Utility</string>
 	<key>objects</key>
 	<array>
 		<dict>
@@ -77,7 +79,7 @@
 				<key>runningsubtext</key>
 				<string>Loading utilities...</string>
 				<key>script</key>
-				<string>./utilities "$1"</string>
+				<string>./u "$1"</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -139,10 +141,50 @@
 			<key>variable</key>
 			<string>ts</string>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>'%Y%m%d%H%M%S','%Y-%m-%d_%H:%M:%S','Mon, 02 Jan 2006 15:04:05 MST','2006-01-02T15:04:05Z07:00'</string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+				<key>verticalsize</key>
+				<integer>6</integer>
+			</dict>
+			<key>description</key>
+			<string>Timestamp formats what you want. (strftime, RFC1123, ISO8601)</string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>textarea</string>
+			<key>variable</key>
+			<string>ts_formarts</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<true/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>When selected, it is enabled.</string>
+			</dict>
+			<key>description</key>
+			<string>The UUID utility allows you to generate universally unique identifiers (UUIDs)</string>
+			<key>label</key>
+			<string>UUID</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>uuid</string>
+		</dict>
 	</array>
 	<key>version</key>
 	<string>1.0.0</string>
 	<key>webaddress</key>
-	<string>https://github.com/yourusername/utilities</string>
+	<string>https://github.com/spearkkk/u</string>
 </dict>
 </plist>

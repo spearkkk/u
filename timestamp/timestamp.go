@@ -18,10 +18,11 @@ type Timestamp struct {
 
 func init() {
 	supportedFormats = []string{
-		"2006-01-02 15:04:05",
+		"%Y-%m-%d %H:%M:%S",
+		"%Y%m%d%H%M%S",
 		time.RFC3339,
 		time.RFC1123,
-		"2006-01-02",
+		"%A",
 	}
 }
 
@@ -41,7 +42,7 @@ func (t *Timestamp) GetName() string {
 }
 
 func (t *Timestamp) GetDescription() string {
-	return "[copy:⏎, next:↹] To get/convert/calculate timestamp."
+	return "[copy:⏎, next:↹] " + t.GetName() + ": To get/convert/calculate timestamp."
 }
 func (t *Timestamp) GetResults(wf *aw.Workflow) {
 	log.Printf("Processing..., values: %s %s", t.value1, t.value2)
@@ -103,7 +104,7 @@ func (t *Timestamp) setResult(wf *aw.Workflow, results []string) {
 			escapedResult = "'" + result + "'"
 		}
 
-		wf.NewItem(t.GetName() + ": " + result).
+		wf.NewItem(result).
 			Subtitle(t.GetDescription()).
 			Arg(result).
 			Copytext(result).
@@ -141,7 +142,7 @@ func processRawValue(time time.Time, rawValue string) ([]string, error) {
 func formatTime(timestamp time.Time) []string {
 	var formattedTimes []string
 	for _, format := range supportedFormats {
-		tmp := timestamp.Format(format)
+		tmp := GetTimestampFormatter().Format(format, timestamp)
 		formattedTimes = append(formattedTimes, tmp)
 	}
 	return formattedTimes

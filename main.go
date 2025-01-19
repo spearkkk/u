@@ -27,7 +27,7 @@ var doCheck bool
 var query string
 
 var wf *aw.Workflow
-var utilities = []Utility{}
+var utilities []Utility
 
 func init() {
 	flag.BoolVar(&doCheck, "check", false, "Check for updates")
@@ -68,6 +68,16 @@ func run() {
 			Valid(false)
 	}
 
+	// Access Alfred configuration variables
+	keyToEnabled := map[string]bool{
+		"ts":   wf.Config.GetBool("ts"),
+		"uuid": wf.Config.GetBool("uuid"),
+	}
+	tsFormats := wf.Config.Get("ts_formats")
+
+	log.Printf("Utility enabled: %v", keyToEnabled)
+	log.Printf("Timestamp formats: %s", tsFormats)
+
 	// Parse input into queries
 	var queries []string
 	if len(wf.Args()) > 0 {
@@ -77,11 +87,13 @@ func run() {
 
 	if len(queries) == 0 {
 		for _, utility := range utilities {
-			utility.GetResults(wf)
+			if keyToEnabled[utility.GetKey()] {
+				utility.GetResults(wf)
+			}
 		}
 	} else {
 		utility := createUtility(queries)
-		if utility != nil {
+		if utility != nil && keyToEnabled[utility.GetKey()] {
 			utility.GetResults(wf)
 		} else {
 			wf.WarnEmpty("No matching utility found", "Please try again")

@@ -1,8 +1,8 @@
 package uuid
 
 import (
-	"github.com/google/uuid"
 	"github.com/deanishe/awgo"
+	"github.com/google/uuid"
 )
 
 var instance *UUID
@@ -27,16 +27,16 @@ func (u *UUID) GetName() string {
 }
 
 func (u *UUID) GetDescription() string {
-	return "[copy:⏎] To generate a unique identifier (UUID)."
+	return "[copy:⏎] " + u.GetName() + ": To generate a unique identifier (UUID)."
 }
 
 func (u *UUID) GetResults(wf *aw.Workflow) {
 	result := uuid.New().String()
-	wf.NewItem(u.GetName() + ": " + result).
-					Subtitle(u.GetDescription()).
-					Arg(result).
-					Copytext(result).
-					Quicklook(result).
-					Valid(true).
-					Autocomplete(u.GetKey())
+	wf.NewItem(result).
+		Subtitle(u.GetDescription()).
+		Arg(result).
+		Copytext(result).
+		Quicklook(result).
+		Valid(true).
+		Autocomplete(u.GetKey())
 }
