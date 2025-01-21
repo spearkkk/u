@@ -30,7 +30,7 @@ var wf *aw.Workflow
 var utilities []Utility
 
 func init() {
-	flag.BoolVar(&doCheck, "check", false, "Check for updates")
+	flag.BoolVar(&doCheck, "check", true, "Check for updates")
 	wf = aw.New(update.GitHub(repo))
 
 	log.Println("cache dir: ", wf.CacheDir())
