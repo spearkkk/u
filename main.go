@@ -44,6 +44,15 @@ func main() {
 func run() {
 	log.Println("Running workflow...")
 
+	if doCheck {
+		wf.Configure(aw.TextErrors(true))
+		log.Println("Checking for updates...")
+		if err := wf.CheckForUpdate(); err != nil {
+			wf.FatalError(err)
+		}
+		return
+	}
+
 	if wf.UpdateCheckDue() && !wf.IsRunning(updateJobName) {
 		log.Println("Running update check in background...")
 
@@ -52,14 +61,7 @@ func run() {
 			log.Printf("Error starting update check: %s", err)
 		}
 	}
-
-	if doCheck {
-		if err := wf.CheckForUpdate(); err != nil {
-			log.Printf("Error checking for update: %s", err)
-		}
-		return
-	}
-
+	
 	if query == "" && wf.UpdateAvailable() {
 		wf.Configure(aw.SuppressUIDs(true))
 		wf.NewItem("Update available!").
