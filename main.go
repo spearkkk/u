@@ -33,6 +33,11 @@ func init() {
 	flag.BoolVar(&doCheck, "check", false, "Check for updates")
 	wf = aw.New(update.GitHub(repo))
 
+	log.Println("cache dir: ", wf.CacheDir())
+	log.Println("data dir: ", wf.DataDir())
+	log.Println("bundle id: ", wf.BundleID())
+	log.Println("Config: ", wf.Config)
+
 	utilities = append(utilities, uuid.NewUUID())
 	utilities = append(utilities, ts.NewTimestamp("", ""))
 }

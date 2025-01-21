@@ -4,6 +4,8 @@ go 1.23.5
 
 replace github.com/spearkkk/u/uuid => ./uuid
 
+replace github.com/spearkkk/u/timestamp => ./timestamp
+
 require (
 	github.com/deanishe/awgo v0.29.1
 	github.com/itchyny/timefmt-go v0.1.6
