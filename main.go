@@ -33,11 +33,6 @@ func init() {
 	flag.BoolVar(&doCheck, "check", true, "Check for updates")
 	wf = aw.New(update.GitHub(repo))
 
-	log.Println("cache dir: ", wf.CacheDir())
-	log.Println("data dir: ", wf.DataDir())
-	log.Println("bundle id: ", wf.BundleID())
-	log.Println("Config: ", wf.Config)
-
 	utilities = append(utilities, uuid.NewUUID())
 	utilities = append(utilities, ts.NewTimestamp("", ""))
 }
@@ -65,7 +60,8 @@ func run() {
 		return
 	}
 
-	if query == "" && wf.UpdateAvailable() {
+	if wf.UpdateAvailable() {
+		log.Println("Update available!")
 		wf.Configure(aw.SuppressUIDs(true))
 		wf.NewItem("Update available!").
 			Subtitle("↩ to install").
