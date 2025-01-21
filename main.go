@@ -60,8 +60,7 @@ func run() {
 		return
 	}
 
-	if wf.UpdateAvailable() {
-		log.Println("Update available!")
+	if query == "" && wf.UpdateAvailable() {
 		wf.Configure(aw.SuppressUIDs(true))
 		wf.NewItem("Update available!").
 			Subtitle("↩ to install").
