@@ -24,7 +24,6 @@ type Utility interface {
 var updateJobName string = "update"
 var repo string = "spearkkk/u"
 var doCheck bool
-var query string
 
 var wf *aw.Workflow
 var utilities []Utility
@@ -50,7 +49,6 @@ func run() {
 		if err := wf.CheckForUpdate(); err != nil {
 			wf.FatalError(err)
 		}
-		return
 	}
 
 	if wf.UpdateCheckDue() && !wf.IsRunning(updateJobName) {
