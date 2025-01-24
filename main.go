@@ -10,19 +10,9 @@ import (
 
 	aw "github.com/deanishe/awgo"
 	"github.com/deanishe/awgo/update"
-	ts "github.com/spearkkk/u/timestamp"
-	uuid "github.com/spearkkk/u/uuid"
 )
 
-type Utility interface {
-	GetKey() string
-	GetName() string
-	GetDescription() string
-	GetResults(wf *aw.Workflow)
-}
-
-var updateJobName string = "update"
-var repo string = "spearkkk/u"
+var updateJobName = "update"
 var doCheck bool
 
 var wf *aw.Workflow
@@ -30,10 +20,10 @@ var utilities []Utility
 
 func init() {
 	flag.BoolVar(&doCheck, "check", true, "Check for updates")
-	wf = aw.New(update.GitHub(repo))
+	wf = aw.New(update.GitHub("spearkkk/u"))
 
-	utilities = append(utilities, uuid.NewUUID())
-	utilities = append(utilities, ts.NewTimestamp("", ""))
+	utilities = append(utilities, createUtility([]string{"uuid", "", ""}, map[string]interface{}{}))
+	utilities = append(utilities, createUtility([]string{"ts", "", ""}, map[string]interface{}{}))
 }
 
 func main() {
@@ -41,7 +31,10 @@ func main() {
 }
 
 func run() {
-	log.Println("Running workflow...")
+	log.Println("Hello, this is utility workflow!")
+	log.Println("Feel free to use the workflow!")
+	log.Println("Please report any issues to here, https://github.com/spearkkk/u/issues.")
+	log.Println("Thanks, Happy coding!")
 
 	if doCheck {
 		wf.Configure(aw.TextErrors(true))
@@ -52,7 +45,7 @@ func run() {
 	}
 
 	if wf.UpdateCheckDue() && !wf.IsRunning(updateJobName) {
-		log.Println("Running update check in background...")
+		log.Println("Running in background for checking update...")
 
 		cmd := exec.Command(os.Args[0], "-check")
 		if err := wf.RunInBackground(updateJobName, cmd); err != nil {
@@ -62,8 +55,7 @@ func run() {
 
 	if wf.UpdateAvailable() {
 		wf.Configure(aw.SuppressUIDs(true))
-		wf.NewItem("Update available!").
-			Subtitle("↩ to install").
+		wf.NewItem("New Version Available(↩)").
 			Autocomplete("workflow:update").
 			Valid(false)
 	}
@@ -73,28 +65,31 @@ func run() {
 		"ts":   wf.Config.GetBool("ts"),
 		"uuid": wf.Config.GetBool("uuid"),
 	}
-	tsFormats := wf.Config.Get("ts_formats")
+	globalConfig := map[string]interface{}{
+		"ts_formats": strings.Split(wf.Config.Get("ts_formats", "'%Y-%M-%D %H-%m-%s %z'"), ","),
+	}
 
 	log.Printf("Utility enabled: %v", keyToEnabled)
-	log.Printf("Timestamp formats: %s", tsFormats)
+	log.Printf("Global configuration: %v", globalConfig)
 
 	// Parse input into queries
 	var queries []string
 	if len(wf.Args()) > 0 {
 		rawQuery := strings.TrimSpace(wf.Args()[0])
 		queries = parseQueries(rawQuery)
+		log.Printf("Parsed queries: %v", queries)
 	}
 
 	if len(queries) == 0 {
 		for _, utility := range utilities {
-			if keyToEnabled[utility.GetKey()] {
-				utility.GetResults(wf)
+			if keyToEnabled[utility.Key()] {
+				utility.Do(wf)
 			}
 		}
 	} else {
-		utility := createUtility(queries)
-		if utility != nil && keyToEnabled[utility.GetKey()] {
-			utility.GetResults(wf)
+		utility := createUtility(queries, globalConfig)
+		if utility != nil && keyToEnabled[utility.Key()] {
+			utility.Do(wf)
 		} else {
 			wf.WarnEmpty("No matching utility found", "Please try again")
 			wf.NewItem("No matching utility found").Valid(false)
@@ -116,33 +111,4 @@ func parseQueries(input string) []string {
 		}
 	}
 	return results
-}
-
-func createUtility(queries []string) Utility {
-	if len(queries) < 1 {
-		return nil
-	}
-
-	key := queries[0]
-	value1 := ""
-	value2 := ""
-
-	if len(queries) > 1 {
-		value1 = queries[1]
-	}
-	if len(queries) > 2 {
-		value2 = queries[2]
-	}
-
-	for _, utility := range utilities {
-		if utility.GetKey() == key {
-			switch key {
-			case "uuid":
-				return uuid.NewUUID()
-			case "ts":
-				return ts.NewTimestamp(value1, value2)
-			}
-		}
-	}
-	return nil
 }

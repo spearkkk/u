@@ -28,23 +28,24 @@ func init() {
 
 func NewTimestamp(value1, value2 string, formats ...string) *Timestamp {
 	if len(formats) != 0 {
+		log.Printf("Custom formats: %v", formats)
 		supportedFormats = formats
 	}
 	return &Timestamp{value1: value1, value2: value2}
 }
 
-func (t *Timestamp) GetKey() string {
+func (t *Timestamp) Key() string {
 	return "ts"
 }
 
-func (t *Timestamp) GetName() string {
-	return "Timestamp"
-}
-
-func (t *Timestamp) GetDescription() string {
-	return "[copy:⏎, next:↹] " + t.GetName() + ": To get/convert/calculate timestamp."
-}
-func (t *Timestamp) GetResults(wf *aw.Workflow) {
+//	func (t *Timestamp) GetName() string {
+//		return "Timestamp"
+//	}
+//
+//	func (t *Timestamp) GetDescription() string {
+//		return "[copy:⏎, next:↹] " + t.GetName() + ": To get/convert/calculate timestamp."
+//	}
+func (t *Timestamp) Do(wf *aw.Workflow) {
 	log.Printf("Processing..., values: %s %s", t.value1, t.value2)
 	// t.value2 must be empty too
 	if t.value1 == "" {
@@ -105,12 +106,12 @@ func (t *Timestamp) setResult(wf *aw.Workflow, results []string) {
 		}
 
 		wf.NewItem(result).
-			Subtitle(t.GetDescription()).
+			Subtitle("[copy:⏎, next:↹] " + "Timestamp" + ": To get/convert/calculate timestamp.").
 			Arg(result).
 			Copytext(result).
 			Quicklook(result).
 			Valid(true).
-			Autocomplete(t.GetKey() + " " + escapedResult + " ")
+			Autocomplete(t.Key() + " " + escapedResult + " ")
 	}
 }
 

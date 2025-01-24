@@ -160,7 +160,7 @@
 			<key>type</key>
 			<string>textarea</string>
 			<key>variable</key>
-			<string>ts_formarts</string>
+			<string>ts_formats</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -183,7 +183,7 @@
 		</dict>
 	</array>
 	<key>version</key>
-	<string>1.1.1</string>
+	<string>1.1.2</string>
 	<key>webaddress</key>
 	<string>https://github.com/spearkkk/u</string>
 </dict>

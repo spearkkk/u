@@ -18,25 +18,18 @@ func NewUUID() *UUID {
 	return instance
 }
 
-func (u *UUID) GetKey() string {
+func (u *UUID) Key() string {
 	return "uuid"
 }
 
-func (u *UUID) GetName() string {
-	return "UUID"
-}
-
-func (u *UUID) GetDescription() string {
-	return "[copy:⏎] " + u.GetName() + ": To generate a unique identifier (UUID)."
-}
-
-func (u *UUID) GetResults(wf *aw.Workflow) {
+func (u *UUID) Do(wf *aw.Workflow) {
 	result := uuid.New().String()
+
 	wf.NewItem(result).
-		Subtitle(u.GetDescription()).
+		Subtitle("Generate a unique identifier (UUID).").
 		Arg(result).
 		Copytext(result).
 		Quicklook(result).
 		Valid(true).
-		Autocomplete(u.GetKey())
+		Autocomplete(u.Key())
 }
