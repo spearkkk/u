@@ -133,7 +133,7 @@
 				<string>When selected, it is enabled.</string>
 			</dict>
 			<key>description</key>
-			<string>A timestamp utility that toggles seamlessly between on and off.</string>
+			<string>Timestamp utility that toggles seamlessly between on and off.</string>
 			<key>label</key>
 			<string>Timestamp</string>
 			<key>type</key>
@@ -173,7 +173,7 @@
 				<string>When selected, it is enabled.</string>
 			</dict>
 			<key>description</key>
-			<string>The UUID utility allows you to generate universally unique identifiers (UUIDs)</string>
+			<string>UUID utility allows you to generate universally unique identifiers (UUIDs)</string>
 			<key>label</key>
 			<string>UUID</string>
 			<key>type</key>
@@ -181,9 +181,28 @@
 			<key>variable</key>
 			<string>uuid</string>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<true/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>When selected, it is enabled.</string>
+			</dict>
+			<key>description</key>
+			<string>JSON utility prettify(beautify) or minify json string</string>
+			<key>label</key>
+			<string>JSON</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>json</string>
+		</dict>
 	</array>
 	<key>version</key>
-	<string>1.2.1</string>
+	<string>1.2.2</string>
 	<key>webaddress</key>
 	<string>https://github.com/spearkkk/u</string>
 </dict>

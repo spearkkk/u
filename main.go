@@ -24,6 +24,7 @@ func init() {
 
 	utilities = append(utilities, createUtility([]string{"uuid", "", ""}, map[string]interface{}{}))
 	utilities = append(utilities, createUtility([]string{"ts", "", ""}, map[string]interface{}{}))
+	utilities = append(utilities, createUtility([]string{"json", "", ""}, map[string]interface{}{}))
 }
 
 func main() {
@@ -66,8 +67,9 @@ func run() {
 
 	// Access Alfred configuration variables
 	keyToEnabled := map[string]bool{
-		"ts":   wf.Config.GetBool("ts"),
-		"uuid": wf.Config.GetBool("uuid"),
+		"ts":   wf.Config.GetBool("ts", true),
+		"uuid": wf.Config.GetBool("uuid", true),
+		"json": wf.Config.GetBool("json", true),
 	}
 	globalConfig := map[string]interface{}{
 		"ts_formats": mapStrings(strings.Split(wf.Config.Get("ts_formats", "%Y-%M-%D %H-%m-%s %z"), ",")),

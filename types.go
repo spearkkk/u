@@ -2,6 +2,7 @@ package main
 
 import (
 	aw "github.com/deanishe/awgo"
+	json "github.com/spearkkk/u/json"
 	ts "github.com/spearkkk/u/timestamp"
 	"github.com/spearkkk/u/uuid"
 )
@@ -36,6 +37,8 @@ func createUtility(queries []string, config map[string]interface{}) Utility {
 			tsFormats = []string{"'%Y-%M-%D %H-%m-%s %z'"}
 		}
 		return ts.NewTimestamp(value1, value2, tsFormats...)
+	case "json":
+		return json.NewJson(value1, value2)
 	}
 
 	return nil
