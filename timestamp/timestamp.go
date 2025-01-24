@@ -3,148 +3,166 @@ package timestamp
 import (
 	"fmt"
 	"log"
-	"strings"
 	"time"
 
 	aw "github.com/deanishe/awgo"
 )
 
-var supportedFormats []string
-
 type Timestamp struct {
-	value1 string
-	value2 string
-}
-
-func init() {
-	supportedFormats = []string{
-		"%Y-%m-%d %H:%M:%S",
-		"%Y%m%d%H%M%S",
-		time.RFC3339,
-		time.RFC1123,
-		"%A",
-	}
+	value1  string
+	value2  string
+	formats []string
 }
 
 func NewTimestamp(value1, value2 string, formats ...string) *Timestamp {
-	if len(formats) != 0 {
-		log.Printf("Custom formats: %v", formats)
-		supportedFormats = formats
-	}
-	return &Timestamp{value1: value1, value2: value2}
+	return &Timestamp{value1: value1, value2: value2, formats: formats}
 }
 
 func (t *Timestamp) Key() string {
 	return "ts"
 }
 
-//	func (t *Timestamp) GetName() string {
-//		return "Timestamp"
-//	}
-//
-//	func (t *Timestamp) GetDescription() string {
-//		return "[copy:⏎, next:↹] " + t.GetName() + ": To get/convert/calculate timestamp."
-//	}
 func (t *Timestamp) Do(wf *aw.Workflow) {
-	log.Printf("Processing..., values: %s %s", t.value1, t.value2)
-	// t.value2 must be empty too
-	if t.value1 == "" {
-		now := time.Now()
-		currentMilliseconds := time.Now().UnixMilli()
+	// Prevent to order by UID
+	wf.Configure(aw.SuppressUIDs(true))
 
-		t.setResult(wf, append([]string{fmt.Sprintf("%d", currentMilliseconds)}, formatTime(now)...))
+	log.Printf("[Timestamp] \tprocessing..., values: %s %s", t.value1, t.value2)
+	now := time.Now()
+
+	// t.value2 must be empty too
+	if t.value1 == "" || t.value1 == "now" {
+		t.setMillisecondValue(wf, now)
 		return
 	}
 
-	parsedValue1 := timestampParser.parse(t.value1, supportedFormats)
-
+	parsedTimestamp1 := timestampParser.Parse(t.value1, t.formats)
 	isUnaryOperation := t.value2 == ""
 	if isUnaryOperation {
-		if parsedValue1.isParsed {
-			if parsedValue1.isNumericTimestamp {
-				t.setResult(wf, formatTime(parsedValue1.time))
+		log.Printf("[Timestamp] \tprocessing unary operation..., value1: %s", t.value1)
+
+		if parsedTimestamp1.isParsed {
+			log.Printf("[Timestamp] \tprocessing unary operation..., parsedTimestamp1: %+v", parsedTimestamp1)
+
+			if parsedTimestamp1.isNumericTimestamp {
+				formatToValue := t.formatTime(parsedTimestamp1.time)
+				t.setFormattedValues(wf, formatToValue)
 				return
 			}
-			t.setResult(wf, []string{fmt.Sprintf("%d", parsedValue1.time.UnixMilli())})
+
+			t.setMillisecondValue(wf, parsedTimestamp1.time)
+			return
+		} else {
+			parsedDuration1 := durationParser.parseDuration(t.value1)
+			if parsedDuration1.isParsed {
+				log.Printf("[Timestamp] \tprocessing unary operation..., parsedDuration1: %+v", parsedDuration1)
+
+				millisecond := now.UnixMilli()
+				if parsedDuration1.isShifting {
+					millisecond += parsedDuration1.duration.ToTimeDuration().Milliseconds()
+				} else {
+					millisecond -= parsedDuration1.duration.ToTimeDuration().Milliseconds()
+				}
+
+				t.setFormattedValues(wf, t.formatTime(time.UnixMilli(millisecond)))
+				return
+			}
+			t.setInvalidValue(wf)
 			return
 		}
-		t.setResult(wf, []string{fmt.Sprintf("Invalid value(%s)", t.value1)})
+	}
+
+	parsedTimestamp2 := timestampParser.Parse(t.value2, t.formats)
+	if parsedTimestamp1.isParsed && parsedTimestamp2.isParsed {
+		result := parsedTimestamp1.time.Sub(parsedTimestamp2.time).String()
+		wf.NewItem(result).
+			Subtitle("Get diff between them.").
+			Arg(result).
+			Copytext(result).
+			Quicklook(result).
+			Valid(true)
 		return
 	}
 
-	parsedValue2 := timestampParser.parse(t.value2, supportedFormats)
-	if !parsedValue1.isParsed && !parsedValue2.isParsed {
-		t.setResult(wf, []string{parsedValue1.time.Sub(parsedValue2.time).String()})
-		return
-	}
-
-	if parsedValue1.isParsed {
-		// parsedValue2 is not timestamp
-		results, err := processRawValue(parsedValue1.time, t.value2)
+	if parsedTimestamp1.isParsed {
+		// parsedTimestamp2 is not timestamp
+		err := t.processRawValue(wf, parsedTimestamp1.time, t.value2)
 		if err != nil {
-			t.setResult(wf, []string{fmt.Sprintf("Invalid values(%s %s)", t.value1, t.value2)})
+			t.setInvalidValue(wf)
 			return
 		}
-		t.setResult(wf, results)
 		return
 	}
 
-	// parsedValue1 is not timestamp
-	results, err := processRawValue(parsedValue2.time, t.value1)
+	// parsedTimestamp1 is not timestamp
+	err := t.processRawValue(wf, parsedTimestamp2.time, t.value1)
 	if err != nil {
-		t.setResult(wf, []string{fmt.Sprintf("Invalid values(%s %s)", t.value1, t.value2)})
+		t.setInvalidValue(wf)
 		return
 	}
-	t.setResult(wf, results)
 }
 
-func (t *Timestamp) setResult(wf *aw.Workflow, results []string) {
-	for _, result := range results {
-		escapedResult := result
-		if strings.ContainsAny(result, " \t\n\r") {
-			escapedResult = "'" + result + "'"
+func (t *Timestamp) processRawValue(wf *aw.Workflow, timestamp time.Time, rawValue string) error {
+	log.Printf("[Timestamp] \tprocessing binary operation..., value1: %s, value2: %s", t.value1, t.value2)
+
+	parsedDuration := durationParser.parseDuration(rawValue)
+	log.Printf("[Timestamp] \tprocessing binary operation..., parsed duration: %+v", parsedDuration)
+
+	if parsedDuration.isParsed {
+		var processedTime = timestamp
+
+		millisecond := processedTime.UnixMilli()
+		if parsedDuration.isShifting {
+			millisecond += parsedDuration.duration.ToTimeDuration().Milliseconds()
+		} else {
+			millisecond -= parsedDuration.duration.ToTimeDuration().Milliseconds()
 		}
 
+		t.setFormattedValues(wf, t.formatTime(time.UnixMilli(millisecond)))
+
+		return nil
+	}
+
+	reformattedTime := timestampFormatter.Format(rawValue, timestamp)
+	if reformattedTime != "" {
+		t.setFormattedValues(wf, map[string]string{rawValue: reformattedTime})
+		return nil
+	}
+
+	return fmt.Errorf("cannot Parse duration or format(%s)", rawValue)
+}
+
+func (t *Timestamp) formatTime(timestamp time.Time) map[string]string {
+	formatToValue := make(map[string]string)
+	for _, format := range t.formats {
+		formatToValue[format] = timestampFormatter.Format(format, timestamp)
+	}
+	return formatToValue
+}
+
+func (t *Timestamp) setFormattedValues(wf *aw.Workflow, formatToValue map[string]string) {
+	for key, result := range formatToValue {
 		wf.NewItem(result).
-			Subtitle("[copy:⏎, next:↹] " + "Timestamp" + ": To get/convert/calculate timestamp.").
+			Subtitle(key).
 			Arg(result).
 			Copytext(result).
 			Quicklook(result).
 			Valid(true).
-			Autocomplete(t.Key() + " " + escapedResult + " ")
+			Autocomplete(fmt.Sprintf("%s %s ", t.Key(), result))
 	}
 }
 
-func processRawValue(time time.Time, rawValue string) ([]string, error) {
-	log.Printf("Processing raw value..., time: %s, rawValue: %s", time.String(), rawValue)
-
-	parseDuration := durationParser.parseDuration(rawValue)
-	log.Printf("Parsed duration: %+v", parseDuration)
-	if parseDuration.isParsed {
-		var processedTime = time
-		if parseDuration.isShifting {
-			processedTime = time.Add(parseDuration.duration.ToTimeDuration())
-		} else {
-			processedTime = time.Add(-parseDuration.duration.ToTimeDuration())
-		}
-
-		return append([]string{fmt.Sprintf("%d", processedTime.UnixMilli())}, formatTime(processedTime)...), nil
-	}
-
-	reformattedTime := timestampFormatter.Format(rawValue, time)
-	if reformattedTime != "" {
-		return []string{reformattedTime}, nil
-	}
-
-	log.Printf("Invalid value(%s)", rawValue)
-	return []string{}, fmt.Errorf("invalid value(%s)", rawValue)
+func (t *Timestamp) setMillisecondValue(wf *aw.Workflow, timestamp time.Time) {
+	result := fmt.Sprintf("%d", timestamp.UnixMilli())
+	wf.NewItem(result).
+		Subtitle("Get millisecond.").
+		Arg(result).
+		Copytext(result).
+		Quicklook(result).
+		Valid(true).
+		Autocomplete(fmt.Sprintf("%s %s ", t.Key(), result))
 }
 
-func formatTime(timestamp time.Time) []string {
-	var formattedTimes []string
-	for _, format := range supportedFormats {
-		tmp := GetTimestampFormatter().Format(format, timestamp)
-		formattedTimes = append(formattedTimes, tmp)
-	}
-	return formattedTimes
+func (t *Timestamp) setInvalidValue(wf *aw.Workflow) {
+	wf.NewItem(fmt.Sprintf("Invalid Value: %s %s", t.value1, t.value2)).
+		Valid(false)
 }

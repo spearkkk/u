@@ -26,7 +26,7 @@ func (u *UUID) Do(wf *aw.Workflow) {
 	result := uuid.New().String()
 
 	wf.NewItem(result).
-		Subtitle("Generate a unique identifier (UUID).").
+		Subtitle("Generate a universal unique identifier (UUID).").
 		Arg(result).
 		Copytext(result).
 		Quicklook(result).

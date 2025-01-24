@@ -145,7 +145,7 @@
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>'%Y%m%d%H%M%S','%Y-%m-%d_%H:%M:%S','Mon, 02 Jan 2006 15:04:05 MST','2006-01-02T15:04:05Z07:00'</string>
+				<string>'%Y%m%d%H%M%S','%Y-%m-%d %H:%M:%S %Z','RFC1123','RFC3339','UnixDate'</string>
 				<key>required</key>
 				<false/>
 				<key>trim</key>

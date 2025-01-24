@@ -19,7 +19,7 @@ var wf *aw.Workflow
 var utilities []Utility
 
 func init() {
-	flag.BoolVar(&doCheck, "check", true, "Check for updates")
+	flag.BoolVar(&doCheck, "check", false, "Check for updates")
 	wf = aw.New(update.GitHub("spearkkk/u"))
 
 	utilities = append(utilities, createUtility([]string{"uuid", "", ""}, map[string]interface{}{}))
@@ -31,10 +31,14 @@ func main() {
 }
 
 func run() {
+	log.Println("########################################################################################")
+	log.Println()
 	log.Println("Hello, this is utility workflow!")
 	log.Println("Feel free to use the workflow!")
 	log.Println("Please report any issues to here, https://github.com/spearkkk/u/issues.")
 	log.Println("Thanks, Happy coding!")
+	log.Println()
+	log.Println("########################################################################################")
 
 	if doCheck {
 		wf.Configure(aw.TextErrors(true))
@@ -66,7 +70,7 @@ func run() {
 		"uuid": wf.Config.GetBool("uuid"),
 	}
 	globalConfig := map[string]interface{}{
-		"ts_formats": strings.Split(wf.Config.Get("ts_formats", "'%Y-%M-%D %H-%m-%s %z'"), ","),
+		"ts_formats": mapStrings(strings.Split(wf.Config.Get("ts_formats", "%Y-%M-%D %H-%m-%s %z"), ",")),
 	}
 
 	log.Printf("Utility enabled: %v", keyToEnabled)
@@ -106,9 +110,17 @@ func parseQueries(input string) []string {
 	for _, match := range matches {
 		for _, group := range match[1:] {
 			if group != "" {
-				results = append(results, group)
+				results = append(results, strings.Trim(group, `"'`))
 			}
 		}
 	}
 	return results
+}
+
+func mapStrings(escapedValues []string) []string {
+	var holder []string
+	for _, value := range escapedValues {
+		holder = append(holder, strings.Trim(strings.Trim(value, "'"), "\""))
+	}
+	return holder
 }
