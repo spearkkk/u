@@ -8,6 +8,84 @@
 	<string>Tools</string>
 	<key>connections</key>
 	<dict>
+		<key>1E325996-1206-4B90-9F29-E45D17BB8B37</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>script-filter</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>338B1CB2-C2F7-47C7-8D68-6DEF35880665</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>script-filter</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>B117BF42-CF68-437B-A3B0-053B8D931676</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>338B1CB2-C2F7-47C7-8D68-6DEF35880665</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>B608B9AA-45F5-489D-BE80-FAAF7D5A2A0D</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>1E325996-1206-4B90-9F29-E45D17BB8B37</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>C0426D2D-B502-417E-B3C0-185ADC055AB8</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>script-filter</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>CEEB7E2A-D991-445F-9760-9F5A7D9FB573</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>C0426D2D-B502-417E-B3C0-185ADC055AB8</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>script-filter</key>
 		<array>
 			<dict>
@@ -32,6 +110,27 @@
 	<string>Utility</string>
 	<key>objects</key>
 	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>keyword</key>
+				<string>uuid</string>
+				<key>subtext</key>
+				<string></string>
+				<key>text</key>
+				<string>UUID</string>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>CEEB7E2A-D991-445F-9760-9F5A7D9FB573</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
@@ -100,24 +199,159 @@
 			<key>version</key>
 			<integer>3</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>uuid</string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>C0426D2D-B502-417E-B3C0-185ADC055AB8</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>keyword</key>
+				<string>ts</string>
+				<key>subtext</key>
+				<string></string>
+				<key>text</key>
+				<string>Timestamp</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>B117BF42-CF68-437B-A3B0-053B8D931676</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>ts {query}</string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>338B1CB2-C2F7-47C7-8D68-6DEF35880665</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>keyword</key>
+				<string>json</string>
+				<key>subtext</key>
+				<string></string>
+				<key>text</key>
+				<string>JSON</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>B608B9AA-45F5-489D-BE80-FAAF7D5A2A0D</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>json {query}</string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>1E325996-1206-4B90-9F29-E45D17BB8B37</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
 	<key>uidata</key>
 	<dict>
+		<key>1E325996-1206-4B90-9F29-E45D17BB8B37</key>
+		<dict>
+			<key>xpos</key>
+			<real>440</real>
+			<key>ypos</key>
+			<real>480</real>
+		</dict>
+		<key>338B1CB2-C2F7-47C7-8D68-6DEF35880665</key>
+		<dict>
+			<key>xpos</key>
+			<real>440</real>
+			<key>ypos</key>
+			<real>315</real>
+		</dict>
+		<key>B117BF42-CF68-437B-A3B0-053B8D931676</key>
+		<dict>
+			<key>xpos</key>
+			<real>180</real>
+			<key>ypos</key>
+			<real>285</real>
+		</dict>
+		<key>B608B9AA-45F5-489D-BE80-FAAF7D5A2A0D</key>
+		<dict>
+			<key>xpos</key>
+			<real>185</real>
+			<key>ypos</key>
+			<real>450</real>
+		</dict>
+		<key>C0426D2D-B502-417E-B3C0-185ADC055AB8</key>
+		<dict>
+			<key>xpos</key>
+			<real>440</real>
+			<key>ypos</key>
+			<real>160</real>
+		</dict>
+		<key>CEEB7E2A-D991-445F-9760-9F5A7D9FB573</key>
+		<dict>
+			<key>xpos</key>
+			<real>180</real>
+			<key>ypos</key>
+			<real>130</real>
+		</dict>
 		<key>copy-to-clipboard</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>815</real>
 			<key>ypos</key>
-			<real>100</real>
+			<real>145</real>
 		</dict>
 		<key>script-filter</key>
 		<dict>
 			<key>xpos</key>
-			<real>100</real>
+			<real>615</real>
 			<key>ypos</key>
-			<real>100</real>
+			<real>145</real>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
@@ -202,7 +436,7 @@
 		</dict>
 	</array>
 	<key>version</key>
-	<string>1.2.2</string>
+	<string>1.2.1</string>
 	<key>webaddress</key>
 	<string>https://github.com/spearkkk/u</string>
 </dict>

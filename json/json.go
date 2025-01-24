@@ -67,8 +67,12 @@ func (j *JSON) Do(wf *aw.Workflow) {
 		result = string(pretty.Ugly([]byte(candidate)))
 	}
 
+	subtitle := "Minify JSON string."
+	if command == "p" {
+		subtitle = "Prettify JSON string."
+	}
 	wf.NewItem(strings.ReplaceAll(result, "\n", " ")).
-		Subtitle("Prettify/minify JSON string.").
+		Subtitle(subtitle).
 		Arg(result).
 		Copytext(result).
 		Quicklook(result).
