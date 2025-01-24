@@ -19,7 +19,7 @@ var wf *aw.Workflow
 var utilities []Utility
 
 func init() {
-	flag.BoolVar(&doCheck, "check", false, "Check for updates")
+	flag.BoolVar(&doCheck, "check", true, "Check for updates")
 	wf = aw.New(update.GitHub("spearkkk/u"))
 
 	utilities = append(utilities, createUtility([]string{"uuid", "", ""}, map[string]interface{}{}))
