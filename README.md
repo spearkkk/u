@@ -2,8 +2,6 @@
 utility functions for Alfred workflow
 ### Todo
 - [ ] write down README.md
-- [ ] AW Updater, fix update for workflow
-- [ ] Timestamp, supports formats from configuration
 - [ ] JSON, prettify, minify, validate
 - [ ] Decode, encode, base64, url, html
 - [ ] Color, convert, hex, rgb, hsl
