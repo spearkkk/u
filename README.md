@@ -3,7 +3,6 @@ utility functions for Alfred workflow
 ### Todo
 - [ ] write down README.md
 - [ ] Decode, encode, base64, url, html
-- [ ] Color, convert, hex, rgb, hsl
 - [ ] String, convert, case, trim, replace
 - [ ] String, naming case, camel, snake, kebab, title
 
@@ -11,6 +10,8 @@ utility functions for Alfred workflow
 escape with quote
 u ts 
 u json p/m 
+
+u c,, hsl hsv는 색상이 입력 받았을 때만 동작한다..
 
 
 

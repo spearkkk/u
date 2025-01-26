@@ -21,6 +21,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>2F678CFD-14E8-4AB0-B8A6-721BA127A91B</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>script-filter</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>338B1CB2-C2F7-47C7-8D68-6DEF35880665</key>
 		<array>
 			<dict>
@@ -78,6 +91,19 @@
 			<dict>
 				<key>destinationuid</key>
 				<string>C0426D2D-B502-417E-B3C0-185ADC055AB8</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>D34F0E82-2A7C-46B7-8F10-BE7ED4669917</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>2F678CFD-14E8-4AB0-B8A6-721BA127A91B</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -292,6 +318,44 @@
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>keyword</key>
+				<string>c</string>
+				<key>subtext</key>
+				<string></string>
+				<key>text</key>
+				<string>Color</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>D34F0E82-2A7C-46B7-8F10-BE7ED4669917</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>c {query}</string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>2F678CFD-14E8-4AB0-B8A6-721BA127A91B</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
@@ -303,6 +367,13 @@
 			<real>440</real>
 			<key>ypos</key>
 			<real>480</real>
+		</dict>
+		<key>2F678CFD-14E8-4AB0-B8A6-721BA127A91B</key>
+		<dict>
+			<key>xpos</key>
+			<real>445</real>
+			<key>ypos</key>
+			<real>660</real>
 		</dict>
 		<key>338B1CB2-C2F7-47C7-8D68-6DEF35880665</key>
 		<dict>
@@ -338,6 +409,13 @@
 			<real>180</real>
 			<key>ypos</key>
 			<real>130</real>
+		</dict>
+		<key>D34F0E82-2A7C-46B7-8F10-BE7ED4669917</key>
+		<dict>
+			<key>xpos</key>
+			<real>190</real>
+			<key>ypos</key>
+			<real>630</real>
 		</dict>
 		<key>copy-to-clipboard</key>
 		<dict>
@@ -434,9 +512,28 @@
 			<key>variable</key>
 			<string>json</string>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<true/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>When selected, it is enabled.</string>
+			</dict>
+			<key>description</key>
+			<string>Color utility to convert RGB to Hex</string>
+			<key>label</key>
+			<string>Color</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>c</string>
+		</dict>
 	</array>
 	<key>version</key>
-	<string>1.2.1</string>
+	<string>1.2.4</string>
 	<key>webaddress</key>
 	<string>https://github.com/spearkkk/u</string>
 </dict>

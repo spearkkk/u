@@ -25,6 +25,7 @@ func init() {
 	utilities = append(utilities, createUtility([]string{"uuid", "", ""}, map[string]interface{}{}))
 	utilities = append(utilities, createUtility([]string{"ts", "", ""}, map[string]interface{}{}))
 	utilities = append(utilities, createUtility([]string{"json", "", ""}, map[string]interface{}{}))
+	utilities = append(utilities, createUtility([]string{"c", "", ""}, map[string]interface{}{}))
 }
 
 func main() {
@@ -42,10 +43,10 @@ func run() {
 	log.Println("########################################################################################")
 
 	if doCheck {
-		wf.Configure(aw.TextErrors(true))
+		//wf.Configure(aw.TextErrors(true))
 		log.Println("Checking for updates...")
 		if err := wf.CheckForUpdate(); err != nil {
-			wf.FatalError(err)
+			log.Printf("Error checking for update: %s", err)
 		}
 	}
 
@@ -70,6 +71,7 @@ func run() {
 		"ts":   wf.Config.GetBool("ts", true),
 		"uuid": wf.Config.GetBool("uuid", true),
 		"json": wf.Config.GetBool("json", true),
+		"c":    wf.Config.GetBool("c", true),
 	}
 	globalConfig := map[string]interface{}{
 		"ts_formats": mapStrings(strings.Split(wf.Config.Get("ts_formats", "%Y-%M-%D %H-%m-%s %z"), ",")),

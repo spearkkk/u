@@ -2,6 +2,7 @@ package main
 
 import (
 	aw "github.com/deanishe/awgo"
+	c "github.com/spearkkk/u/color"
 	json "github.com/spearkkk/u/json"
 	ts "github.com/spearkkk/u/timestamp"
 	"github.com/spearkkk/u/uuid"
@@ -39,6 +40,8 @@ func createUtility(queries []string, config map[string]interface{}) Utility {
 		return ts.NewTimestamp(value1, value2, tsFormats...)
 	case "json":
 		return json.NewJson(value1, value2)
+	case "c":
+		return c.NewColor(queries[1:])
 	}
 
 	return nil
