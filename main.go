@@ -99,8 +99,22 @@ func run() {
 		if utility != nil && keyToEnabled[utility.Key()] {
 			utility.Do(wf)
 		} else {
-			wf.WarnEmpty("No matching utility found", "Please try again")
-			wf.NewItem("No matching utility found").Valid(false)
+			wf.NewItem("UUID").
+				Arg("uuid").
+				Valid(false).
+				Autocomplete("uuid")
+			wf.NewItem("Timestamp").
+				Arg("ts").
+				Valid(false).
+				Autocomplete("ts")
+			wf.NewItem("JSON").
+				Arg("json").
+				Valid(false).
+				Autocomplete("json")
+			wf.NewItem("Color").
+				Arg("c").
+				Valid(false).
+				Autocomplete("c")
 		}
 	}
 
