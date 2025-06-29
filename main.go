@@ -74,7 +74,7 @@ func run() {
 		"c":    wf.Config.GetBool("c", true),
 	}
 	globalConfig := map[string]interface{}{
-		"ts_formats": mapStrings(strings.Split(wf.Config.Get("ts_formats", "%Y-%M-%D %H-%m-%s %z"), ",")),
+		"ts_formats": mapStrings(strings.Split(strings.ReplaceAll(wf.Config.Get("ts_formats", "%Y-%M-%D %H-%m-%s %z"), "\n", ""), ",")),
 	}
 
 	log.Printf("Utility enabled: %v", keyToEnabled)

@@ -50,6 +50,8 @@ func (t *Timestamp) Do(wf *aw.Workflow) {
 			}
 
 			t.setMillisecondValue(wf, parsedTimestamp1.time)
+			formatToValue := t.formatTime(parsedTimestamp1.time)
+			t.setFormattedValues(wf, formatToValue)
 			return
 		} else {
 			parsedDuration1 := durationParser.parseDuration(t.value1)
@@ -72,6 +74,12 @@ func (t *Timestamp) Do(wf *aw.Workflow) {
 	}
 
 	parsedTimestamp2 := timestampParser.Parse(t.value2, t.formats)
+
+	if !parsedTimestamp1.isParsed && !parsedTimestamp2.isParsed {
+		t.setInvalidValue(wf)
+		return
+	}
+
 	if parsedTimestamp1.isParsed && parsedTimestamp2.isParsed {
 		result := parsedTimestamp1.time.Sub(parsedTimestamp2.time).String()
 		wf.NewItem(result).
