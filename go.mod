@@ -8,6 +8,7 @@ replace github.com/spearkkk/u/timestamp => ./timestamp
 
 require (
 	github.com/deanishe/awgo v0.29.1
+	github.com/iancoleman/strcase v0.3.0
 	github.com/itchyny/timefmt-go v0.1.6
 	github.com/llgcode/draw2d v0.0.0-20240627062922-0ed1ff131195
 	github.com/lucasb-eyer/go-colorful v1.2.0

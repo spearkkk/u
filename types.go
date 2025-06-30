@@ -4,6 +4,7 @@ import (
 	aw "github.com/deanishe/awgo"
 	c "github.com/spearkkk/u/color"
 	json "github.com/spearkkk/u/json"
+	"github.com/spearkkk/u/strcase"
 	ts "github.com/spearkkk/u/timestamp"
 	"github.com/spearkkk/u/uuid"
 )
@@ -13,7 +14,7 @@ type Utility interface {
 	Do(wf *aw.Workflow)
 }
 
-func createUtility(queries []string, config map[string]interface{}) Utility {
+func createUtility(queries []string, config map[string]interface{}, queryWithoutKey string) Utility {
 	if len(queries) < 1 {
 		return nil
 	}
@@ -40,8 +41,10 @@ func createUtility(queries []string, config map[string]interface{}) Utility {
 		return ts.NewTimestamp(value1, value2, tsFormats...)
 	case "json":
 		return json.NewJson(value1, value2)
-	case "c":
+	case "color":
 		return c.NewColor(queries[1:])
+	case "case":
+		return strcase.NewStrCase(queryWithoutKey)
 	}
 
 	return nil

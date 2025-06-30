@@ -22,10 +22,11 @@ func init() {
 	flag.BoolVar(&doCheck, "check", true, "Check for updates")
 	wf = aw.New(update.GitHub("spearkkk/u"))
 
-	utilities = append(utilities, createUtility([]string{"uuid", "", ""}, map[string]interface{}{}))
-	utilities = append(utilities, createUtility([]string{"ts", "", ""}, map[string]interface{}{}))
-	utilities = append(utilities, createUtility([]string{"json", "", ""}, map[string]interface{}{}))
-	utilities = append(utilities, createUtility([]string{"c", "", ""}, map[string]interface{}{}))
+	utilities = append(utilities, createUtility([]string{"uuid", "", ""}, map[string]interface{}{}, ""))
+	utilities = append(utilities, createUtility([]string{"ts", "", ""}, map[string]interface{}{}, ""))
+	utilities = append(utilities, createUtility([]string{"json", "", ""}, map[string]interface{}{}, ""))
+	utilities = append(utilities, createUtility([]string{"color", "", ""}, map[string]interface{}{}, ""))
+	utilities = append(utilities, createUtility([]string{"case", "", ""}, map[string]interface{}{}, ""))
 }
 
 func main() {
@@ -68,10 +69,11 @@ func run() {
 
 	// Access Alfred configuration variables
 	keyToEnabled := map[string]bool{
-		"ts":   wf.Config.GetBool("ts", true),
-		"uuid": wf.Config.GetBool("uuid", true),
-		"json": wf.Config.GetBool("json", true),
-		"c":    wf.Config.GetBool("c", true),
+		"ts":    wf.Config.GetBool("ts", true),
+		"uuid":  wf.Config.GetBool("uuid", true),
+		"json":  wf.Config.GetBool("json", true),
+		"color": wf.Config.GetBool("color", true),
+		"case":  wf.Config.GetBool("case", true),
 	}
 	globalConfig := map[string]interface{}{
 		"ts_formats": mapStrings(strings.Split(strings.ReplaceAll(wf.Config.Get("ts_formats", "%Y-%M-%D %H-%m-%s %z"), "\n", ""), ",")),
@@ -82,10 +84,14 @@ func run() {
 
 	// Parse input into queries
 	var queries []string
+	var key, queryWithoutKey string
+
 	if len(wf.Args()) > 0 {
 		rawQuery := strings.TrimSpace(wf.Args()[0])
 		queries = parseQueries(rawQuery)
-		log.Printf("Parsed queries: %v", queries)
+		key, queryWithoutKey = splitKey(rawQuery)
+		log.Printf("Parsed queries: %v\n", queries)
+		log.Printf("Key: %s, leftover: %v\n", key, queryWithoutKey)
 	}
 
 	if len(queries) == 0 {
@@ -95,26 +101,15 @@ func run() {
 			}
 		}
 	} else {
-		utility := createUtility(queries, globalConfig)
+		utility := createUtility(queries, globalConfig, queryWithoutKey)
 		if utility != nil && keyToEnabled[utility.Key()] {
 			utility.Do(wf)
 		} else {
-			wf.NewItem("UUID").
-				Arg("uuid").
-				Valid(false).
-				Autocomplete("uuid")
-			wf.NewItem("Timestamp").
-				Arg("ts").
-				Valid(false).
-				Autocomplete("ts")
-			wf.NewItem("JSON").
-				Arg("json").
-				Valid(false).
-				Autocomplete("json")
-			wf.NewItem("Color").
-				Arg("c").
-				Valid(false).
-				Autocomplete("c")
+			for anotherKey, enabled := range keyToEnabled {
+				if strings.HasPrefix(anotherKey, key) && enabled {
+					wf.NewItem(anotherKey).Arg(anotherKey).Valid(false).Autocomplete(anotherKey)
+				}
+			}
 		}
 	}
 
@@ -133,6 +128,18 @@ func parseQueries(input string) []string {
 		}
 	}
 	return results
+}
+
+func splitKey(input string) (string, string) {
+	parts := strings.Fields(input)
+	if len(parts) == 0 {
+		return "", ""
+	}
+	key := parts[0]
+	if len(parts) > 1 {
+		return key, strings.Join(parts[1:], " ")
+	}
+	return key, ""
 }
 
 func mapStrings(escapedValues []string) []string {

@@ -40,7 +40,7 @@ func NewColor(values []string) *Color {
 }
 
 func (c *Color) Key() string {
-	return "c"
+	return "color"
 }
 
 func (c *Color) Do(wf *aw.Workflow) {
