@@ -44,14 +44,12 @@ func (t *Timestamp) Do(wf *aw.Workflow) {
 			log.Printf("[Timestamp] \tprocessing unary operation..., parsedTimestamp1: %+v", parsedTimestamp1)
 
 			if parsedTimestamp1.isNumericTimestamp {
-				formatToValue := t.formatTime(parsedTimestamp1.time)
-				t.setFormattedValues(wf, formatToValue)
+				t.setFormattedValues(wf, t.formatTime(parsedTimestamp1.time))
 				return
 			}
 
 			t.setMillisecondValue(wf, parsedTimestamp1.time)
-			formatToValue := t.formatTime(parsedTimestamp1.time)
-			t.setFormattedValues(wf, formatToValue)
+			t.setFormattedValues(wf, t.formatTime(parsedTimestamp1.time))
 			return
 		} else {
 			parsedDuration1 := durationParser.parseDuration(t.value1)
@@ -68,7 +66,16 @@ func (t *Timestamp) Do(wf *aw.Workflow) {
 				t.setFormattedValues(wf, t.formatTime(time.UnixMilli(millisecond)))
 				return
 			}
+
 			t.setInvalidValue(wf)
+
+			// fallback logic for formatting string value
+			maybeFormat := t.value1
+			maybeFormattedTime := t.formatTimeWithFormat(now, maybeFormat)
+			// if formattedTime does not equal the format string, it means the format could be valid
+			if maybeFormat != maybeFormattedTime[maybeFormat] {
+				t.setFormattedValues(wf, maybeFormattedTime)
+			}
 			return
 		}
 	}
@@ -83,7 +90,7 @@ func (t *Timestamp) Do(wf *aw.Workflow) {
 	if parsedTimestamp1.isParsed && parsedTimestamp2.isParsed {
 		result := parsedTimestamp1.time.Sub(parsedTimestamp2.time).String()
 		wf.NewItem(result).
-			Subtitle("Get diff between them.").
+			Subtitle("Get diff").
 			Arg(result).
 			Copytext(result).
 			Quicklook(result).
@@ -147,6 +154,12 @@ func (t *Timestamp) formatTime(timestamp time.Time) map[string]string {
 	return formatToValue
 }
 
+func (t *Timestamp) formatTimeWithFormat(timestamp time.Time, format string) map[string]string {
+	formatToValue := make(map[string]string)
+	formatToValue[format] = timestampFormatter.Format(format, timestamp)
+	return formatToValue
+}
+
 func (t *Timestamp) setFormattedValues(wf *aw.Workflow, formatToValue map[string]string) {
 	for key, result := range formatToValue {
 		wf.NewItem(result).
@@ -172,5 +185,7 @@ func (t *Timestamp) setMillisecondValue(wf *aw.Workflow, timestamp time.Time) {
 
 func (t *Timestamp) setInvalidValue(wf *aw.Workflow) {
 	wf.NewItem(fmt.Sprintf("Invalid Value: %s %s", t.value1, t.value2)).
-		Valid(false)
+		Subtitle("u ts [TIMESTAMP|DURATION]").
+		Valid(false).
+		Autocomplete(fmt.Sprintf("%s now", t.Key()))
 }

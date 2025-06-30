@@ -23,7 +23,6 @@ func (tf *Formatter) Format(format string, timestamp time.Time) string {
 		return timefmt.Format(timestamp, format)
 	}
 	if "RFC1123" == format {
-		log.Println("RFC1123" + timestamp.Format(time.RFC1123))
 		return timestamp.Format(time.RFC1123)
 	}
 	if "RFC3339" == format {
