@@ -457,7 +457,7 @@
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>'%Y%m%d%H%M%S','%Y-%m-%d %H:%M:%S %Z','RFC1123','RFC3339','UnixDate'</string>
+				<string>%Y-%m-%d %H:%M:%S %Z','RFC1123','RFC3339','UnixDate'</string>
 				<key>required</key>
 				<false/>
 				<key>trim</key>
