@@ -27,6 +27,7 @@ func init() {
 	utilities = append(utilities, createUtility([]string{"json", "", ""}, map[string]interface{}{}, ""))
 	utilities = append(utilities, createUtility([]string{"color", "", ""}, map[string]interface{}{}, ""))
 	utilities = append(utilities, createUtility([]string{"case", "", ""}, map[string]interface{}{}, ""))
+	utilities = append(utilities, createUtility([]string{"fk", "", ""}, map[string]interface{}{}, ""))
 }
 
 func main() {
@@ -74,6 +75,7 @@ func run() {
 		"json":  wf.Config.GetBool("json", true),
 		"color": wf.Config.GetBool("color", true),
 		"case":  wf.Config.GetBool("case", true),
+		"fk":    wf.Config.GetBool("fk", true),
 	}
 	globalConfig := map[string]interface{}{
 		"ts_formats": mapStrings(strings.Split(strings.ReplaceAll(wf.Config.Get("ts_formats", "%Y-%M-%D %H-%m-%s %z"), "\n", ""), ",")),
@@ -91,7 +93,6 @@ func run() {
 		queries = parseQueries(rawQuery)
 		key, queryWithoutKey = splitKey(rawQuery)
 		log.Printf("Parsed queries: %v\n", queries)
-		log.Printf("Key: %s, leftover: %v\n", key, queryWithoutKey)
 	}
 
 	if len(queries) == 0 {

@@ -18,6 +18,7 @@ require (
 )
 
 require (
+	github.com/brianvoe/gofakeit/v7 v7.3.0 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/jtolds/gls v4.20.0+incompatible // indirect

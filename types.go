@@ -3,6 +3,7 @@ package main
 import (
 	aw "github.com/deanishe/awgo"
 	c "github.com/spearkkk/u/color"
+	"github.com/spearkkk/u/faker"
 	json "github.com/spearkkk/u/json"
 	"github.com/spearkkk/u/strcase"
 	ts "github.com/spearkkk/u/timestamp"
@@ -45,6 +46,8 @@ func createUtility(queries []string, config map[string]interface{}, queryWithout
 		return c.NewColor(queries[1:])
 	case "case":
 		return strcase.NewStrCase(queryWithoutKey)
+	case "fk":
+		return faker.NewFaker(queries[1:])
 	}
 
 	return nil
