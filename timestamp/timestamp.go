@@ -133,6 +133,7 @@ func (t *Timestamp) processRawValue(wf *aw.Workflow, timestamp time.Time, rawVal
 		}
 
 		t.setFormattedValues(wf, t.formatTime(time.UnixMilli(millisecond)))
+		t.setMillisecondValue(wf, time.UnixMilli(millisecond))
 
 		return nil
 	}
